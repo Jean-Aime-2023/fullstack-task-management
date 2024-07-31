@@ -7,11 +7,15 @@ import styled from 'styled-components';
 import menu from '@/app/utils/menu';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import Button from '../Button/Button';
+import { logout } from '@/app/utils/Icons';
+import { useClerk } from '@clerk/nextjs';
 
 const Sidebar = () => {
   const { theme } = useGlobalState();
   const router = useRouter();
   const pathname = usePathname();
+  const { signOut } = useClerk();
   const handleClick = (link: string) => {
     router.push(link);
   };
@@ -32,6 +36,7 @@ const Sidebar = () => {
           const link = item.link;
           return (
             <li
+              key={link}
               className={`nav-item ${pathname === link ? 'active' : ''}`}
               onClick={() => {
                 handleClick(link);
@@ -43,7 +48,20 @@ const Sidebar = () => {
           );
         })}
       </ul>
-      <button></button>
+      <div className="sign-out relative m-6">
+        <Button
+          name={"Sign Out"}
+          type={"submit"}
+          padding={"0.4rem 0.8rem"}
+          borderRad={"0.8rem"}
+          fw={"500"}
+          fs={"1.2rem"}
+          icon={logout}
+          click={() => {
+            signOut(() => router.push("/sign-in"));
+          }}
+        />
+      </div>
     </SidebarStyled>
   );
 };

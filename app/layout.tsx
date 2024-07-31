@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Outfit } from 'next/font/google';
 import './globals.css';
 import Sidebar from './components/Sidebar/Sidebar';
 import GlobalStyleProvider from './providers/GlobalStyleProvider';
@@ -7,7 +7,7 @@ import ContextProvider from './providers/ContextProvider';
 import { ClerkProvider } from '@clerk/nextjs';
 import { auth } from '@clerk/nextjs/server';
 
-const inter = Inter({ subsets: ['latin'] });
+const outfit = Outfit({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -34,7 +34,7 @@ export default function RootLayout({
             referrerPolicy="no-referrer"
           />
         </head>
-        <body className={inter.className}>
+        <body className={outfit.className}>
           <ContextProvider>
             <GlobalStyleProvider>
               {userId && <Sidebar />}
