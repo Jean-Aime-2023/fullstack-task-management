@@ -17,6 +17,7 @@ const Tasks = ({ title, tasks }: Props) => {
   return (
     <TaskStyled theme={theme}>
       <h1>{title}</h1>
+ {/* <CreateContent/> */}
         {!isLoading?(
           <div className="tasks grid">
           {tasks.map((task) => (
@@ -25,7 +26,7 @@ const Tasks = ({ title, tasks }: Props) => {
               title={task.title}
               date={task.date}
               description={task.description}
-              isCompleted={task.completed}
+              isCompleted={task.isCompleted}
               id={task.id}
             />
           ))}
