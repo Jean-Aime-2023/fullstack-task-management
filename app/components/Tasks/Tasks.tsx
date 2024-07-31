@@ -5,6 +5,7 @@ import React from 'react';
 import styled from 'styled-components';
 import TaskItem from '../TaskItem/TaskItem';
 import { plus } from '@/app/utils/Icons';
+import CreateContent from '../Modals/CreateContent';
 
 interface Props {
   title: string;
@@ -12,26 +13,32 @@ interface Props {
 }
 
 const Tasks = ({ title, tasks }: Props) => {
-  const { theme } = useGlobalState();
+  const { theme,isLoading } = useGlobalState();
   return (
     <TaskStyled theme={theme}>
       <h1>{title}</h1>
-      <div className="tasks grid">
-        {tasks.map((task) => (
-          <TaskItem
-            key={task.id}
-            title={task.title}
-            date={task.date}
-            description={task.description}
-            isCompleted={task.completed}
-            id={task.id}
-          />
-        ))}
-        <button className="create-task">
-          {plus}
-          Add New Task
-        </button>
-      </div>
+        {!isLoading?(
+          <div className="tasks grid">
+          {tasks.map((task) => (
+            <TaskItem
+              key={task.id}
+              title={task.title}
+              date={task.date}
+              description={task.description}
+              isCompleted={task.completed}
+              id={task.id}
+            />
+          ))}
+          <button className="create-task">
+            {plus}
+            Add New Task
+          </button>
+        </div>
+        ):(
+          <div className="task-loader w-full h-full flex justify-center items-center">
+            <span className='loader'></span>
+          </div>
+        )}
     </TaskStyled>
   );
 };

@@ -1,8 +1,8 @@
 import { edit, trash } from '@/app/utils/Icons';
 import React from 'react';
 import styled from 'styled-components';
-import formatDate from "@/app/utils/formatDate";
-
+import formatDate from '@/app/utils/formatDate';
+import { useGlobalState } from '@/app/context/globalProvider';
 
 interface Props {
   title: string;
@@ -13,8 +13,9 @@ interface Props {
 }
 
 const TaskItem = ({ date, description, title, isCompleted, id }: Props) => {
+  const { theme, deleteTask, isLoading } = useGlobalState();
   return (
-    <TaskItemStyled>
+    <TaskItemStyled theme={theme}>
       <h1>{title}</h1>
       <p>{description}</p>
       <p className="date">{formatDate(date)}</p>
@@ -25,7 +26,9 @@ const TaskItem = ({ date, description, title, isCompleted, id }: Props) => {
           <button className="incomplete">Incomplete</button>
         )}
         <button className="edit">{edit}</button>
-        <button className="delete">{trash}</button>
+          <button className="delete" onClick={() => {deleteTask(id);}}>
+            {trash}
+          </button>
       </div>
     </TaskItemStyled>
   );
