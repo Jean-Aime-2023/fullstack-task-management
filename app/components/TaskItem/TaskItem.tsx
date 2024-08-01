@@ -18,7 +18,7 @@ const TaskItem = ({ date, description, title, isCompleted, id }: Props) => {
   const { theme, deleteTask, isLoading,updateContent,openUpdateModal } = useGlobalState();
   return (
     <>
-     {updateContent && <Modal content={<UpdateContent/>} />}
+    {updateContent && <Modal content={<UpdateContent/>} />}
     <TaskItemStyled theme={theme}>
       <h1>{title}</h1>
       <p>{description}</p>
@@ -29,7 +29,7 @@ const TaskItem = ({ date, description, title, isCompleted, id }: Props) => {
         ) : (
           <button className="incomplete">Incomplete</button>
         )}
-        <button className="edit" onClick={()=>openUpdateModal}>{edit}</button>
+        <button className="edit" onClick={()=>openUpdateModal()}>{edit}</button>
           <button className="delete" onClick={() => {deleteTask(id);}}>
             {trash}
           </button>
@@ -91,6 +91,7 @@ const TaskItemStyled = styled.div`
     .completed {
       background: ${(props) => props.theme.colorGreenDark} !important;
     }
-  }`;
+  }
+`;
 
 export default TaskItem;

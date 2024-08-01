@@ -22,8 +22,8 @@ export const GlobalProvider = ({ children }) => {
   const theme = themes[selectedTheme];
 
   const openUpdateModal=()=>{
-    setUpdateContent(true)
     console.log('clicked')
+    setUpdateContent(true)
   }
 
   const closeUpdateModal=()=>{

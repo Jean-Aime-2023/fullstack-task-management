@@ -198,7 +198,7 @@ const CreateContentStyled = styled.form`
     input {
       width: initial;
     }
-  }`
-;
+  }
+`;
 
 export default UpdateContent;
