@@ -1,22 +1,13 @@
-
-'use client';
-
-import React from 'react';
-import styled, { ThemeProvider } from 'styled-components';
-import { useGlobalState } from '@/app/context/globalProvider';
+"use client";
+import React from "react";
+import styled from "styled-components";
 
 interface Props {
   children: React.ReactNode;
 }
 
-export default function GlobalStyleProvider({ children }: Props) {
-  const { theme } = useGlobalState();
-
-  return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyles>{children}</GlobalStyles>
-    </ThemeProvider>
-  );
+function GlobalStyleProvider({ children }: Props) {
+  return <GlobalStyles>{children}</GlobalStyles>;
 }
 
 const GlobalStyles = styled.div`
@@ -24,6 +15,12 @@ const GlobalStyles = styled.div`
   display: flex;
   gap: 2.5rem;
   height: 100%;
+  transition: all 0.3s ease-in-out;
+
+  @media screen and (max-width: 768px) {
+    padding: 1rem;
+    gap: 1rem;
+  }
 
   .grid {
     display: grid;
@@ -31,3 +28,5 @@ const GlobalStyles = styled.div`
     gap: 1.5rem;
   }
 `;
+
+export default GlobalStyleProvider;

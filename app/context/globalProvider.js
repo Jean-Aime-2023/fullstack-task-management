@@ -1,27 +1,60 @@
-'use client';
-
-import React from 'react';
-import { createContext, useContext, useState } from 'react';
-import themes from './themes';
-import axios from 'axios';
-import { useUser } from '@clerk/nextjs';
-import toast from 'react-hot-toast';
+"use client";
+import React, { createContext, useState, useContext } from "react";
+import themes from "./themes";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useUser } from "@clerk/nextjs";
 
 export const GlobalContext = createContext();
 export const GlobalUpdateContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
+  const { user } = useUser();
+
   const [selectedTheme, setSelectedTheme] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
+  const [updateContent,setUpdateContent] = useState(false)
+
   const [tasks, setTasks] = useState([]);
-  const { user } = useUser();
+
   const theme = themes[selectedTheme];
+
+  const openUpdateModal=()=>{
+    setUpdateContent(true)
+    console.log('clicked')
+  }
+
+  const closeUpdateModal=()=>{
+    setUpdateContent(false)
+  }
+
+  const openModal = () => {
+    setModal(true);
+  };
+
+  const closeModal = () => {
+    setModal(false);
+  };
+
+  const collapseMenu = () => {
+    setCollapsed(!collapsed);
+  };
 
   const allTasks = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get('/api/tasks');
-      setTasks(res.data);
+      const res = await axios.get("/api/tasks");
+
+      const sorted = res.data.sort((a, b) => {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      });
+
+      setTasks(sorted);
+
       setIsLoading(false);
     } catch (error) {
       console.log(error);
@@ -31,12 +64,25 @@ export const GlobalProvider = ({ children }) => {
   const deleteTask = async (id) => {
     try {
       const res = await axios.delete(`/api/tasks/${id}`);
-      toast.success('Task deleted');
+      toast.success("Task deleted");
 
       allTasks();
     } catch (error) {
       console.log(error);
-      toast.error('Something went wrong');
+      toast.error("Something went wrong");
+    }
+  };
+
+  const updateTask = async (task) => {
+    try {
+      const res = await axios.put(`/api/tasks/${id}`);
+
+      toast.success("Task updated");
+
+      allTasks();
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong");
     }
   };
 
@@ -58,6 +104,16 @@ export const GlobalProvider = ({ children }) => {
         completedTasks,
         importantTasks,
         incompleteTasks,
+        updateTask,
+        modal,
+        openModal,
+        closeModal,
+        allTasks,
+        collapsed,
+        collapseMenu,
+        updateContent,
+        openUpdateModal,
+        closeUpdateModal
       }}
     >
       <GlobalUpdateContext.Provider value={{}}>

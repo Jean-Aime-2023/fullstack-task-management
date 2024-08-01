@@ -1,34 +1,53 @@
-'use client';
+"use client";
+import React from "react";
+import styled from "styled-components";
+import { useGlobalState } from "@/app/context/globalProvider";
+import Image from "next/image";
 
-import { useGlobalState } from '@/app/context/globalProvider';
-import Image from 'next/image';
-import React from 'react';
-import styled from 'styled-components';
-import menu from '@/app/utils/menu';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import Button from '../Button/Button';
-import { logout } from '@/app/utils/Icons';
-import { useClerk } from '@clerk/nextjs';
+import menu from "@/app/utils/menu";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import Button from "../Button/Button";
+import { arrowLeft, bars, logout } from "@/app/utils/Icons";
+import { UserButton, useClerk, useUser } from "@clerk/nextjs";
 
-const Sidebar = () => {
-  const { theme } = useGlobalState();
+function Sidebar() {
+  const { theme, collapsed, collapseMenu } = useGlobalState();
+  const { signOut } = useClerk();
+
+  const { user } = useUser();
+
+  const { firstName, lastName, imageUrl } = user || {
+    firstName: "",
+    lastName: "",
+    imageUrl: "",
+  };
+
   const router = useRouter();
   const pathname = usePathname();
-  const { signOut } = useClerk();
+
   const handleClick = (link: string) => {
     router.push(link);
+    if (window.innerWidth < 768) {
+      collapseMenu();
+    }
   };
+
   return (
-    <SidebarStyled>
+    <SidebarStyled theme={theme} collapsed={collapsed}>
+      <button className="toggle-nav" onClick={collapseMenu}>
+        {collapsed ? bars : arrowLeft}
+      </button>
       <div className="profile">
         <div className="profile-overlay"></div>
         <div className="image">
-          <Image width={70} height={70} src={'/avatar1.png'} alt="profile" />
+          <Image width={70} height={70} src={imageUrl} alt="profile" />
         </div>
-        <h1>
-          <span>Sin</span>
-          <span>Rostro</span>
+        <div className="user-btn absolute z-20 top-0 w-full h-full">
+          <UserButton />
+        </div>
+        <h1 className="capitalize">
+          {firstName} {lastName}
         </h1>
       </div>
       <ul className="nav-items">
@@ -36,8 +55,8 @@ const Sidebar = () => {
           const link = item.link;
           return (
             <li
-              key={link}
-              className={`nav-item ${pathname === link ? 'active' : ''}`}
+              key={item.id}
+              className={`nav-item ${pathname === link ? "active" : ""}`}
               onClick={() => {
                 handleClick(link);
               }}
@@ -58,15 +77,15 @@ const Sidebar = () => {
           fs={"1.2rem"}
           icon={logout}
           click={() => {
-            signOut(() => router.push("/sign-in"));
+            signOut(() => router.push("/signin"));
           }}
         />
       </div>
     </SidebarStyled>
   );
-};
+}
 
-const SidebarStyled = styled.nav`
+const SidebarStyled = styled.nav<{ collapsed: boolean }>`
   position: relative;
   width: ${(props) => props.theme.sidebarWidth};
   background-color: ${(props) => props.theme.colorBg2};
@@ -78,6 +97,20 @@ const SidebarStyled = styled.nav`
   justify-content: space-between;
 
   color: ${(props) => props.theme.colorGrey3};
+
+  @media screen and (max-width: 768px) {
+    position: fixed;
+    height: calc(100vh - 2rem);
+    z-index: 100;
+
+    transition: all 0.3s cubic-bezier(0.53, 0.21, 0, 1);
+    transform: ${(props) =>
+      props.collapsed ? "translateX(-107%)" : "translateX(0)"};
+
+    .toggle-nav {
+      display: block !important;
+    }
+  }
 
   .toggle-nav {
     display: none;
@@ -100,11 +133,11 @@ const SidebarStyled = styled.nav`
       width: 100%;
       height: 100%;
 
-      .cl-userButtonBox {
+      .cl-userButtonTrigger {
         width: 100%;
         height: 100%;
 
-        .cl-userButtonTrigger {
+        .cl-userButtonBox {
           width: 100%;
           height: 100%;
           opacity: 0;

@@ -35,8 +35,6 @@ export async function POST(req: Request) {
         userId,
       },
     });
-
-    console.log(task)
     return NextResponse.json(task);
   } catch (error) {
     console.log('ERROR CREATING TASK: ', error);
@@ -62,20 +60,5 @@ export async function GET(req: Request) {
   } catch (error) {
     console.log("ERROR GETTING TASKS: ", error);
     return NextResponse.json({ error: "Error getting task", status: 500 });
-  }
-}
-
-export async function PUT(req: Request) {
-  try {
-  } catch (error) {
-    console.log('ERROR UPDATING TASK: ', error);
-    return NextResponse.json({ error: 'Error updating task', status: 500 });
-  }
-}
-export async function DELETE(req: Request) {
-  try {
-  } catch (error) {
-    console.log('ERROR DELETING TASK: ', error);
-    return NextResponse.json({ error: 'Error deleting task', status: 500 });
   }
 }

@@ -7,14 +7,14 @@ import styled from "styled-components";
 import Button from "../Button/Button";
 import { add } from "@/app/utils/Icons";
 
-function CreateContent() {
+function UpdateContent() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [completed, setCompleted] = useState(false);
   const [important, setImportant] = useState(false);
 
-  const { theme, allTasks, closeModal } = useGlobalState();
+  const { theme, allTasks, closeModal,updateTask } = useGlobalState();
 
   const handleChange = (name: string) => (e: any) => {
     switch (name) {
@@ -49,27 +49,12 @@ function CreateContent() {
       important,
     };
 
-    try {
-      const res = await axios.post("/api/tasks", task);
-
-      if (res.data.error) {
-        toast.error(res.data.error);
-      }
-
-      if (!res.data.error) {
-        toast.success("Task created successfully.");
-        allTasks();
-        closeModal();
-      }
-    } catch (error) {
-      toast.error("Something went wrong.");
-      console.log(error);
-    }
+    updateTask(task)
   };
 
   return (
     <CreateContentStyled onSubmit={handleSubmit} theme={theme}>
-      <h1>Create a Task</h1>
+      <h1>Update a Task</h1>
       <div className="input-control">
         <label htmlFor="title">Title</label>
         <input
@@ -78,7 +63,6 @@ function CreateContent() {
           value={title}
           name="title"
           onChange={handleChange("title")}
-          placeholder="e.g, Watch a video from Fireship."
         />
       </div>
       <div className="input-control">
@@ -89,7 +73,6 @@ function CreateContent() {
           name="description"
           id="description"
           rows={4}
-          placeholder="e.g, Watch a video about Next.js Auth"
         ></textarea>
       </div>
       <div className="input-control">
@@ -126,7 +109,7 @@ function CreateContent() {
       <div className="submit-btn flex justify-end">
         <Button
           type="submit"
-          name="Create Task"
+          name="Update Task"
           icon={add}
           padding={"0.8rem 2rem"}
           borderRad={"0.8rem"}
@@ -215,7 +198,7 @@ const CreateContentStyled = styled.form`
     input {
       width: initial;
     }
-  }
-`;
+  }`
+;
 
-export default CreateContent;
+export default UpdateContent;

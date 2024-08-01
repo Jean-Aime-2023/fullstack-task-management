@@ -17,10 +17,42 @@ export async function DELETE(
         id,
       },
     });
-    console.log('TASK DELETED', task);
+    console.log('TASK DELETED');
     return NextResponse.json(task);
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error: 'Error deleting task', status: 500 });
+  }
+}
+
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { userId } = auth();
+    const { id } = params;
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized', status: 401 });
+    }
+
+    const body = await req.json();
+    const { title, description, isCompleted, isImportant } = body;
+
+    const updatedTask = await prisma.task.update({
+      where: { id },
+      data: {
+        title,
+        description,
+        isCompleted,
+        isImportant,
+      },
+    });
+
+    console.log('TASK UPDATED');
+    return NextResponse.json(updatedTask);
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ error: 'Error updating task', status: 500 });
   }
 }
